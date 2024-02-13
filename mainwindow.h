@@ -17,6 +17,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_duration_Changed(qint64 duration);
+    void on_position_Changed(qint64 duration);
     void on_pushButtonOpen_clicked();
 
     void on_horizontalSliderVolume_valueChanged(int value);
@@ -25,9 +27,11 @@ private slots:
 
     void on_pushButtonPause_clicked();
 
-    void on_horizontalSliderProgress_valueChanged(int value);
 
-    void on_labelProgress_objectNameChanged(const QString &objectName);
+
+//    void on_labelProgress_objectNameChanged(const QString &objectName);
+
+    void on_horizontalSliderProgress_sliderMoved(int position);
 
 private:
     Ui::MainWindow *ui;

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "QFileDialog"
 #include"QStyle"
+#include"QTime"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,16 +19,34 @@ MainWindow::MainWindow(QWidget *parent)
     //Player init:
 
     m_player = new QMediaPlayer(this);
-    m2_player = new QMediaPlayer(this);
     m_player->setVolume(70);
     ui->labelVolume->setText(QString("Volume: ").append(QString::number(m_player->volume())));
     ui->horizontalSliderVolume->setValue(m_player->volume());
+
+    //Connect:
+    connect(m_player, &QMediaPlayer::durationChanged,this, &MainWindow::on_duration_Changed);
+    connect(m_player, &QMediaPlayer::positionChanged,this, &MainWindow::on_position_Changed);
 }
 
 MainWindow::~MainWindow()
 {
     delete m_player;
+    //delete m2_player;
     delete ui;
+}
+
+void MainWindow::on_duration_Changed(qint64 duration)
+{
+    this->ui->horizontalSliderProgress->setMaximum(duration);
+    QTime q_time = QTime::fromMSecsSinceStartOfDay(duration);
+    this->ui->labelDuration->setText(QString("Duration: ").append(q_time.toString("mm:ss")));
+}
+
+void MainWindow::on_position_Changed(qint64 position)
+{
+    QTime q_time = QTime::fromMSecsSinceStartOfDay(position);
+    this->ui->labelProgress->setText(QString(q_time.toString("mm:ss")));
+    this->ui->horizontalSliderProgress->setSliderPosition(position);
 }
 
 
@@ -42,6 +61,8 @@ void MainWindow::on_pushButtonOpen_clicked()
     this->ui->labelFile->setText(file);
     this->setWindowTitle("MediaPlayer - " + file.split('/').last());
     this->m_player->setMedia(QUrl::fromLocalFile(file));
+    this->m_player->duration();
+    //this->ui->labelDuration->setText(QString("Duration :").append(QString::number(m_player->duration())));
 }
 
 
@@ -64,8 +85,8 @@ void MainWindow::on_pushButtonPause_clicked()
 }
 
 
-void MainWindow::on_horizontalSliderProgress_valueChanged(int progress)
+void MainWindow::on_horizontalSliderProgress_sliderMoved(int position)
 {
-    m_player->setProgress(progress);
-    ui->labelVolume->setText(QString("Progress :").append(QString::number(m_player->volume())));
+    this->m_player->setPosition(position);
 }
+
