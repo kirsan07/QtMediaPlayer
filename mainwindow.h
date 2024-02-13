@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,5 +38,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QMediaPlayer* m_player;
+
+    QMediaPlaylist* m_playlist;
+    QStandardItemModel* m_playlist_model;
 };
 #endif // MAINWINDOW_H
